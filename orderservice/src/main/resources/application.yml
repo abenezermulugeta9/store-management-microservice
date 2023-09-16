@@ -1,0 +1,29 @@
+spring:
+  # application configuration
+  application:
+    name: ORDER-SERVICE
+  # database server configuration
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:3306/orderdb
+    username: root
+    password: 12345678@Az
+    driverClassName: com.mysql.cj.jdbc.Driver
+  # orm library configuration
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL57InnoDBDialect
+    hibernate:
+      ddl-auto: update
+
+# server configuration
+server:
+  port: 8082
+
+# microservice configuration
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}
