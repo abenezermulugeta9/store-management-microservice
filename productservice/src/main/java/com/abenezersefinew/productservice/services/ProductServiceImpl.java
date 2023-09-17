@@ -55,6 +55,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = RuntimeException.class)
     public void reduceQuantity(Long productId, Long quantity) {
         log.info("Reducing product quantity from inventory...");
         Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product not found."));
