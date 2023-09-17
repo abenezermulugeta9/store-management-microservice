@@ -2,6 +2,7 @@ package com.abenezersefinew.productservice.services;
 
 import com.abenezersefinew.productservice.entities.Product;
 import com.abenezersefinew.productservice.exceptions.ProductNotFoundException;
+import com.abenezersefinew.productservice.exceptions.ProductQuantityExceedException;
 import com.abenezersefinew.productservice.models.ProductRequestModel;
 import com.abenezersefinew.productservice.models.ProductResponseModel;
 import com.abenezersefinew.productservice.repositories.ProductRepository;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Log4j2
 public class ProductServiceImpl implements ProductService {
-    private final ProductRepository productRepository;
+    private  ProductRepository productRepository;
 
     @Autowired
     public ProductServiceImpl(ProductRepository productRepository) {
@@ -51,5 +52,19 @@ public class ProductServiceImpl implements ProductService {
         BeanUtils.copyProperties(product, productResponseModel);
 
         return productResponseModel;
+    }
+
+    @Override
+    public void reduceQuantity(Long productId, Long quantity) {
+        log.info("Reducing product quantity from inventory...");
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product not found."));
+
+        if(product.getQuantity() < quantity) {
+            throw new ProductQuantityExceedException("Product quantity exceeds the quantity in the inventory.");
+        }
+
+        product.setQuantity(product.getQuantity() - quantity);
+        productRepository.save(product);
+        log.info("Product quantity reduced.");
     }
 }

@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.Path;
+
 @RestController
 @RequestMapping("/products")
 public class ProductController {
@@ -29,6 +31,12 @@ public class ProductController {
     public ResponseEntity<Long> create(@RequestBody ProductRequestModel productRequestModel) {
         Long productId = productService.create(productRequestModel);
         return new ResponseEntity<>(productId, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/reduce-quantity/{id}")
+    public ResponseEntity<Void> reduceQuantity(@PathVariable("id") Long productId, @RequestParam Long quantity) {
+        productService.reduceQuantity(productId, quantity);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
 
