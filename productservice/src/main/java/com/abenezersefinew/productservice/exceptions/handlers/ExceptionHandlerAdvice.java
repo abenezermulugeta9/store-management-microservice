@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.net.http.HttpResponse;
-
 @ControllerAdvice
 public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
 
@@ -21,7 +19,7 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<ExceptionResponseModel> handleProductNotFoundException(ProductNotFoundException exception) {
         return new ResponseEntity<>(new ExceptionResponseModel().builder()
-                .httpStatus(HttpStatus.NOT_FOUND)
+                .exceptionCode(exception.getExceptionCode())
                 .exceptionMessage(exception.getMessage())
                 .build(), HttpStatus.NOT_FOUND);
     }
@@ -31,18 +29,8 @@ public class ExceptionHandlerAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ProductQuantityExceedException.class)
     public ResponseEntity<ExceptionResponseModel> handleProductQuantityExceedException(ProductQuantityExceedException exception) {
         return new ResponseEntity<>(new ExceptionResponseModel().builder()
-                .httpStatus(HttpStatus.BAD_REQUEST)
+                .exceptionCode(exception.getExceptionCode())
                 .exceptionMessage(exception.getMessage())
                 .build(), HttpStatus.BAD_REQUEST);
-    }
-
-    @ResponseBody
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ExceptionResponseModel> handleGenericException(Exception exception) {
-        return new ResponseEntity<>(new ExceptionResponseModel().builder()
-                .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-                .exceptionMessage(exception.getMessage())
-                .build(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

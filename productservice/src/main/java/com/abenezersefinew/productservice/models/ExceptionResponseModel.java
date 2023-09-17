@@ -1,7 +1,6 @@
 package com.abenezersefinew.productservice.models;
 
 import lombok.*;
-import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
@@ -9,6 +8,6 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExceptionResponseModel {
-    private HttpStatus httpStatus;
+    private String exceptionCode;
     private String exceptionMessage;
 }

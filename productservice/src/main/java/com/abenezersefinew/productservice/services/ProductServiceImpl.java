@@ -45,7 +45,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public ProductResponseModel getById(Long id) {
         log.info("Finding product by id...");
-        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product not found."));
+        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product not found.", "NOT_FOUND"));
         log.info("Product found.");
 
         ProductResponseModel productResponseModel = new ProductResponseModel();
@@ -58,10 +58,10 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = RuntimeException.class)
     public void reduceQuantity(Long productId, Long quantity) {
         log.info("Reducing product quantity from inventory...");
-        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product not found."));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product not found.", "NOT_FOUND"));
 
         if(product.getQuantity() < quantity) {
-            throw new ProductQuantityExceedException("Product quantity exceeds the quantity in the inventory.");
+            throw new ProductQuantityExceedException("Product quantity exceeds the quantity in the inventory.", "BAD_REQUEST");
         }
 
         product.setQuantity(product.getQuantity() - quantity);
