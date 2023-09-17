@@ -1,4 +1,4 @@
-package external.clients;
+package com.abenezersefinew.orderservice.external.clients;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;

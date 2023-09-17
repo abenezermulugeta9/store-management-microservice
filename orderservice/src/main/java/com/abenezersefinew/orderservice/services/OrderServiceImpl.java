@@ -1,10 +1,10 @@
 package com.abenezersefinew.orderservice.services;
 
 import com.abenezersefinew.orderservice.entities.Order;
+import com.abenezersefinew.orderservice.external.clients.ProductService;
 import com.abenezersefinew.orderservice.models.OrderRequestModel;
 import com.abenezersefinew.orderservice.repositories.OrderRepository;
 import com.abenezersefinew.orderservice.services.interfaces.OrderService;
-import external.clients.ProductService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
