@@ -15,6 +15,7 @@ public interface ProductService {
     /**
      * The method declaration should be the same as in the controller in the product service.
      * Because this is an external call, it needs to have the same api in order to establish a connection between the two services.
+     * @params - required productId and quantity query parameter.
      */
     @PutMapping("/reduce-quantity/{id}")
     ResponseEntity<Void> reduceQuantity(@PathVariable("id") Long productId, @RequestParam Long quantity);
