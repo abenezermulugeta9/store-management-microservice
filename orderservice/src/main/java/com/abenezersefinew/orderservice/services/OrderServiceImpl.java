@@ -5,6 +5,8 @@ import com.abenezersefinew.orderservice.exceptions.GenericException;
 import com.abenezersefinew.orderservice.external.clients.PaymentService;
 import com.abenezersefinew.orderservice.external.clients.ProductService;
 import com.abenezersefinew.orderservice.external.requests.PaymentRequestModel;
+import com.abenezersefinew.orderservice.external.responses.PaymentDetails;
+import com.abenezersefinew.orderservice.external.responses.ProductDetails;
 import com.abenezersefinew.orderservice.models.OrderRequestModel;
 import com.abenezersefinew.orderservice.models.OrderResponseModel;
 import com.abenezersefinew.orderservice.repositories.OrderRepository;
@@ -88,8 +90,12 @@ public class OrderServiceImpl implements OrderService {
 
         /** @external - get product details from product service using rest template.*/
         log.info("Getting the product associated with this order....");
-        OrderResponseModel.ProductDetails productDetails = restTemplate.getForObject("http://PRODUCT-SERVICE/products/" + order.getProductId(), OrderResponseModel.ProductDetails.class);
+        ProductDetails productDetails = restTemplate.getForObject("http://PRODUCT-SERVICE/products/" + order.getProductId(), ProductDetails.class);
         log.info("Product details retrieved.");
+
+        log.info("Getting payment details for order...");
+        PaymentDetails paymentDetails = restTemplate.getForObject("http://PAYMENT-SERVICE/payments/orders/" + order.getId(), PaymentDetails.class);
+        log.info("Payment information for order retrieved.");
 
         OrderResponseModel orderResponseModel = OrderResponseModel.builder()
                 .orderId(order.getId())
@@ -97,6 +103,7 @@ public class OrderServiceImpl implements OrderService {
                 .amount(order.getAmount())
                 .orderDate(order.getOrderDate())
                 .productDetails(productDetails)
+                .paymentDetails(paymentDetails)
                 .build();
 
         log.info("Order details returned.");

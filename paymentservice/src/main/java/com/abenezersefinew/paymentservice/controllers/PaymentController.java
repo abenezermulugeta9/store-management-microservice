@@ -24,7 +24,7 @@ public class PaymentController {
         return new ResponseEntity<>(paymentService.processPayment(paymentRequestModel), HttpStatus.CREATED);
     }
 
-    @GetMapping("/{orderId}")
+    @GetMapping("/orders/{orderId}")
     public ResponseEntity<PaymentResponseModel> getPaymentDetailsByOrderId(@PathVariable("orderId") Long orderId) {
         return new ResponseEntity<>(paymentService.getPaymentDetailsByOrderId(orderId), HttpStatus.OK);
     }

@@ -1,10 +1,11 @@
 package com.abenezersefinew.orderservice.models;
 
+import com.abenezersefinew.orderservice.external.responses.PaymentDetails;
+import com.abenezersefinew.orderservice.external.responses.ProductDetails;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.Instant;
 
 @Data
@@ -17,15 +18,5 @@ public class OrderResponseModel {
     private String orderStatus;
     private Long amount;
     private ProductDetails productDetails;
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ProductDetails {
-        private Long productId;
-        private String productName;
-        private Long price;
-        private Long quantity;
-    }
-
+    private PaymentDetails paymentDetails;
 }
