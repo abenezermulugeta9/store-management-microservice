@@ -1,0 +1,46 @@
+# server configuration
+server:
+  port: 9090
+
+spring:
+  # application configuration
+  application:
+    name: API-GATEWAY
+  config:
+    import: configserver:http://localhost:9296 # client discovery configuration coming from config server in github
+  cloud:
+    gateway: # api gateway configuration
+      routes:
+        # register a load-balanced order service in the api gateway
+        - id : ORDER-SERVICE
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/orders/**
+          # configure circuit breaker for order service
+          filters:
+            - name : CircuitBreaker
+              args:
+                name: ORDER-SERVICE
+                fallbackuri: forward:/order-service-fallback # if the order service is down, the circuit breaker will forward the request to this api
+        # register a load-balanced product service in the api gateway
+        - id: PRODUCT-SERVICE
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/products/**
+          # configure circuit breaker for product service
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: PRODUCT-SERVICE
+                fallbackuri: forward:/product-service-fallback # if the product service is down, the circuit breaker will forward the request to this api
+        # register a load-balanced payment service in the api gateway
+        - id: PAYMENT-SERVICE
+          uri: lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/payments/**
+          # configure circuit breaker for payment service
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: PAYMENT-SERVICE
+                fallbackuri: forward:/payment-service-fallback # if the payment service is down, the circuit breaker will forward the request to this api
