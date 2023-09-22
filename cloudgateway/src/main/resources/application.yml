@@ -65,3 +65,12 @@ spring:
                 redis-rate-limiter.burstCapacity: 1 # Represents the maximum number of requests that can be temporarily allowed to exceed
                 # the replenish rate before the rate limiter starts blocking requests. In this case, it's set to 1, which means that if there is a burst
                 # of requests, only one request can exceed the replenish rate before the rate limiter starts throttling additional requests.
+
+# Okta configuration
+okta:
+  oauth2:
+    issuer: https://dev-85443835.okta.com/oauth2/default
+    audience: api://default
+    client-id: 0oabgw4in1tL3qYXn5d7
+    client-secret: SUGijsyBiH6d1FpkVpD9F3-NKIvayu69aK6mBVY9ELa6yaqIQpi-_ioQPrNf_Q-s
+    scopes: openid, profile, email, offline_access
