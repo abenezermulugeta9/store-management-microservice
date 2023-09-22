@@ -1,22 +1,20 @@
-# server configuration
+# Server configuration
 server:
   port: 8080
 
 spring:
-  # application configuration
+  # Application configuration
   application:
     name: PRODUCT-SERVICE
-  # client discovery configuration coming from config server in github
   config:
-    import:
-      configserver:http://localhost:9296
-  # database server configuration
+    import: configserver:http://localhost:9296 # Client discovery configuration coming from config server in github
+  # Database server configuration
   datasource:
     url: jdbc:mysql://${DB_HOST:localhost}:3306/productdb
     username: root
     password: 12345678@Az
     driverClassName: com.mysql.cj.jdbc.Driver
-  # orm library configuration
+  # ORM library configuration
   jpa:
     database-platform: org.hibernate.dialect.MySQL57InnoDBDialect
     hibernate:

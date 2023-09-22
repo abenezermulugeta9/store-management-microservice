@@ -1,12 +1,12 @@
-# server configuration
+# Server configuration
 server:
   port: 9296
 
 spring:
-  # application configuration
+  # Application configuration
   application:
     name: CONFIG-SEVER
-  # config server configuration
+  # Config server configuration
   cloud:
     config:
       server:

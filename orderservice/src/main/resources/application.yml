@@ -1,23 +1,38 @@
-# server configuration
+# Server configuration
 server:
   port: 8082
 
 spring:
-  # application configuration
+  # Application configuration
   application:
     name: ORDER-SERVICE
-  # client discovery configuration coming from config server in github
   config:
-    import:
-      configserver:http://localhost:9296
-  # database server configuration
+    import: configserver:http://localhost:9296   # Client discovery configuration coming from config server in github
+  # Database server configuration
   datasource:
     url: jdbc:mysql://${DB_HOST:localhost}:3306/orderdb
     username: root
     password: 12345678@Az
     driverClassName: com.mysql.cj.jdbc.Driver
-  # orm library configuration
+  # ORM library configuration
   jpa:
     database-platform: org.hibernate.dialect.MySQL57InnoDBDialect
     hibernate:
       ddl-auto: update
+
+# Configure circuit breaker for the external calls to be made from order service
+resilience4j:
+  circuitbreaker:
+    instances:
+      external: # Name of the circuit breaker instance, this can be called on the feign external service call
+        event-consumer-buffer-size: 10 # Size of memory to store events occurred that are captured by the circuit breaker
+        failure-rate-threshold: 50 # This is a percentage to determine if the circuit has to be opened. If 50% of calls failed, the circuit will be opened.
+        minimum-number-of-calls: 5 # Number of calls before the circuit breaker starts monitoring for failures.
+        automatic-transition-from-open-to-half-open-enabled: true # If "true," the circuit breaker is transitioned from "open"
+        # to "half-opened" state allowing a limited number of calls to test if the service recovered from the failure.
+        wait-duration-in-open-state: 5s # The duration in which the circuit breaker remains in an open state.
+        permitted-number-of-calls-in-half-open-state: 3 # The number of calls allowed in a half-opened state.
+        sliding-window-size: 10 #This determines the size of the sliding window used for tracking the success and failure of recent calls.
+        # The sliding window is used to calculate metrics like the failure rate.
+        sliding-window-type: COUNT_BASED #This setting specifies the type of sliding window used for tracking metrics. In this case, it's "COUNT_BASED,"
+        # meaning that the window size is based on the count of calls rather than time-based intervals.
