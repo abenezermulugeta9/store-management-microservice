@@ -32,7 +32,7 @@ resilience4j:
         # to "half-opened" state allowing a limited number of calls to test if the service recovered from the failure.
         wait-duration-in-open-state: 5s # The duration in which the circuit breaker remains in an open state.
         permitted-number-of-calls-in-half-open-state: 3 # The number of calls allowed in a half-opened state.
-        sliding-window-size: 10 #This determines the size of the sliding window used for tracking the success and failure of recent calls.
+        sliding-window-size: 10 # This determines the size of the sliding window used for tracking the success and failure of recent calls.
         # The sliding window is used to calculate metrics like the failure rate.
-        sliding-window-type: COUNT_BASED #This setting specifies the type of sliding window used for tracking metrics. In this case, it's "COUNT_BASED,"
+        sliding-window-type: COUNT_BASED # This setting specifies the type of sliding window used for tracking metrics. In this case, it's "COUNT_BASED,"
         # meaning that the window size is based on the count of calls rather than time-based intervals.

@@ -22,6 +22,13 @@ spring:
               args:
                 name: ORDER-SERVICE
                 fallbackuri: forward:/order-service-fallback # If the order service is down, the circuit breaker will forward the request to this api
+            - name: RequestRateLimiter # Configure rate limiter for order service
+              args:
+                redis-rate-limiter.replenishRate: 1 # Represents the number of requests per unit of time.
+                # In this case, the rate limiter will allow one request per one second.
+                redis-rate-limiter.burstCapacity: 1 # Represents the maximum number of requests that can be temporarily allowed to exceed
+                # the replenish rate before the rate limiter starts blocking requests. In this case, it's set to 1, which means that if there is a burst
+                # of requests, only one request can exceed the replenish rate before the rate limiter starts throttling additional requests.
         # Register a load-balanced product service in the api gateway
         - id: PRODUCT-SERVICE
           uri: lb://PRODUCT-SERVICE
@@ -33,6 +40,13 @@ spring:
               args:
                 name: PRODUCT-SERVICE
                 fallbackuri: forward:/product-service-fallback # If the product service is down, the circuit breaker will forward the request to this api
+            - name: RequestRateLimiter # Configure rate limiter for product service
+              args:
+                redis-rate-limiter.replenishRate: 1 # Represents the number of requests per unit of time.
+                # In this case, the rate limiter will allow one request per one second.
+                redis-rate-limiter.burstCapacity: 1 # Represents the maximum number of requests that can be temporarily allowed to exceed
+                # the replenish rate before the rate limiter starts blocking requests. In this case, it's set to 1, which means that if there is a burst
+                # of requests, only one request can exceed the replenish rate before the rate limiter starts throttling additional requests.
         # Register a load-balanced payment service in the api gateway
         - id: PAYMENT-SERVICE
           uri: lb://PAYMENT-SERVICE
@@ -44,3 +58,10 @@ spring:
               args:
                 name: PAYMENT-SERVICE
                 fallbackuri: forward:/payment-service-fallback # If the payment service is down, the circuit breaker will forward the request to this api
+            - name: RequestRateLimiter # Configure rate limiter for payment service
+              args:
+                redis-rate-limiter.replenishRate: 1 # Represents the number of requests per unit of time.
+                # In this case, the rate limiter will allow one request per one second.
+                redis-rate-limiter.burstCapacity: 1 # Represents the maximum number of requests that can be temporarily allowed to exceed
+                # the replenish rate before the rate limiter starts blocking requests. In this case, it's set to 1, which means that if there is a burst
+                # of requests, only one request can exceed the replenish rate before the rate limiter starts throttling additional requests.
