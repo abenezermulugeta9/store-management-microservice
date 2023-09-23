@@ -6,6 +6,7 @@ import com.abenezersefinew.orderservice.services.interfaces.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,12 +20,14 @@ public class OrderController {
     }
 
     @PostMapping("/place-order")
+    @PreAuthorize("hasAuthority('Customer')")
     public ResponseEntity<Long> placeOrder(@RequestBody OrderRequestModel orderRequestModel) {
         Long orderId = orderService.placeOrder(orderRequestModel);
         return new ResponseEntity<>(orderId, HttpStatus.OK);
     }
 
     @GetMapping("/{orderId}")
+    @PreAuthorize("hasAuthority('Customer') || hasAuthority('Admin')")
     public ResponseEntity<OrderResponseModel> getOrderDetails(@PathVariable("orderId") Long orderId) {
         OrderResponseModel orderResponseModel = orderService.getOrderDetails(orderId);
         return new ResponseEntity<>(orderResponseModel, HttpStatus.OK);

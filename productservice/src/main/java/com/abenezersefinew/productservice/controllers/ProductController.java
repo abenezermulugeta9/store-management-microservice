@@ -6,6 +6,7 @@ import com.abenezersefinew.productservice.services.interfaces.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.ws.rs.Path;
@@ -22,12 +23,14 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('Admin') || hasAuthority('Customer') || hasAuthority('SCOPE_internal')")
     public ResponseEntity<ProductResponseModel> getById(@PathVariable("id") Long id) {
         ProductResponseModel productResponseModel = productService.getById(id);
         return new ResponseEntity<>(productResponseModel, HttpStatus.OK);
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('Admin')")
     public ResponseEntity<Long> create(@RequestBody ProductRequestModel productRequestModel) {
         Long productId = productService.create(productRequestModel);
         return new ResponseEntity<>(productId, HttpStatus.CREATED);
