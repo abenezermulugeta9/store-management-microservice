@@ -1,0 +1,33 @@
+spring:
+  config:
+    import: optional:configserver:http://localhost:9296   # Client discovery configuration coming from config server in github
+  # OAuth2 configuration
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-85443835.okta.com/oauth2/default
+      client:
+        registration: # Internal services called from order service (product and payment services)
+          internal-client: # This name can be any arbitrary name
+            provider: okta
+            authorization-grant-type: client_credentials
+            scope: internal # 'internal' is a custom scope created on okta dashboard to allow internal communication between services
+            client-id: 0oabgw4in1tL3qYXn5d7
+            client-secret: SUGijsyBiH6d1FpkVpD9F3-NKIvayu69aK6mBVY9ELa6yaqIQpi-_ioQPrNf_Q-s
+        provider:
+          okta:
+            issuer-uri: https://dev-85443835.okta.com/oauth2/default
+  # Database server configuration
+  datasource:
+    url: jdbc:h2:mem:order
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+  # ORM library configuration
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+
+eureka:
+  client:
+    enabled: false
