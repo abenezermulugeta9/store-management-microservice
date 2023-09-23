@@ -12,6 +12,7 @@ import com.abenezersefinew.orderservice.models.OrderRequestModel;
 import com.abenezersefinew.orderservice.models.OrderResponseModel;
 import com.abenezersefinew.orderservice.models.PaymentMode;
 import com.abenezersefinew.orderservice.repositories.OrderRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -29,6 +30,7 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class OrderServiceImplTest {
+    private Order order;
     private static final Instant DATE_TIME_NOW = Instant.now();
     @Mock
     private OrderRepository orderRepository;
@@ -42,11 +44,17 @@ public class OrderServiceImplTest {
     @InjectMocks
     private OrderServiceImpl orderService;
 
+    @BeforeEach
+    void init() {
+        // This method gets called in every test method, so better call it here once for all.
+        order = getMockOrder();
+    }
+
     @Test
     @DisplayName("Get order details the happy path")
     void testGetOrderDetails() {
         // Mock different calls and objects in the method
-        Order order = getMockOrder();
+        // Some mocks come from the @BeforeEach method
         when(orderRepository.findById(any(Long.class))).thenReturn(Optional.of(order));
         when(restTemplate.getForObject("http://PRODUCT-SERVICE/products/" + order.getProductId(), ProductDetails.class)).thenReturn(getMockProductDetails());
         when(restTemplate.getForObject("http://PAYMENT-SERVICE/payments/orders/" + order.getId(), PaymentDetails.class)).thenReturn(getMockPaymentDetails());
@@ -69,6 +77,7 @@ public class OrderServiceImplTest {
     @DisplayName("Get order details throws not found exception")
     void testGetOrderDetailsThrowingNotFoundException() {
         // Mock different calls and objects in the method
+        // Some mocks come from the @BeforeEach method
         when(orderRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(null));
 
         // Execute the method planned to test and throw exception from it
@@ -76,8 +85,8 @@ public class OrderServiceImplTest {
 
         // Verify if different calls have been made
         verify(orderRepository, times(1)).findById(1L);
-        verify(restTemplate, never()).getForObject("http://PRODUCT-SERVICE/products/" + getMockOrder().getProductId(), ProductDetails.class);
-        verify(restTemplate, never()).getForObject("http://PAYMENT-SERVICE/payments/orders/" + getMockOrder().getId(), PaymentDetails.class);
+        verify(restTemplate, never()).getForObject("http://PRODUCT-SERVICE/products/" + order.getProductId(), ProductDetails.class);
+        verify(restTemplate, never()).getForObject("http://PAYMENT-SERVICE/payments/orders/" + order.getId(), PaymentDetails.class);
 
         // Assert values and outcomes
         assertEquals(actualException.getMessage(), "Order not found.");
@@ -89,8 +98,8 @@ public class OrderServiceImplTest {
     @DisplayName("Place order the happy path")
     void testPlaceOrder() {
         // Mock different calls and objects in the method
+        // Some mocks come from the @BeforeEach method
         OrderRequestModel orderRequestModel = getMockOrderRequestModel();
-        Order order = getMockOrder();
         when(orderRepository.save(any(Order.class))).thenReturn(order);
         when(productService.reduceQuantity(any(Long.class), any(Long.class))).thenReturn(new ResponseEntity<Void>(HttpStatus.OK));
         when(paymentService.processPayment(any(PaymentRequestModel.class))).thenReturn(new ResponseEntity<Long>(HttpStatus.OK));
@@ -111,8 +120,8 @@ public class OrderServiceImplTest {
     @DisplayName("Place order creates the order but failed to process payment")
     void testProcessPaymentFailureAndOrderCreated() {
         // Mock different calls and objects in the method
+        // Some mocks come from the @BeforeEach method
         OrderRequestModel orderRequestModel = getMockOrderRequestModel();
-        Order order = getMockOrder();
         when(orderRepository.save(any(Order.class))).thenReturn(order);
         when(productService.reduceQuantity(any(Long.class), any(Long.class))).thenReturn(new ResponseEntity<Void>(HttpStatus.OK));
         when(paymentService.processPayment(any(PaymentRequestModel.class))).thenThrow(new RuntimeException());
