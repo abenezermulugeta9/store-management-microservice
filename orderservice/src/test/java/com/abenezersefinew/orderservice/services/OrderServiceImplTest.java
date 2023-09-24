@@ -45,7 +45,7 @@ public class OrderServiceImplTest {
     private OrderServiceImpl orderService;
 
     @BeforeEach
-    void init() {
+    void setup() {
         // This method gets called in every test method, so better call it here once for all.
         order = getMockOrder();
     }
