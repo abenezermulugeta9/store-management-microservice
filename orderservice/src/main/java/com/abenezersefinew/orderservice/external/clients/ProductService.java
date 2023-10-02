@@ -24,7 +24,7 @@ public interface ProductService {
     ResponseEntity<Void> reduceQuantity(@PathVariable("id") Long productId, @RequestParam Long quantity);
 
     /** This method gets executed when the circuit breaker doesn't find the service unavailable. */
-    default void circuitBreakerFallBack(Exception exception) {
+    default ResponseEntity<Void> circuitBreakerFallBack(Exception exception) {
         throw new GenericException("Product service unavailable.", "UNAVAILABLE", 500);
     }
 }

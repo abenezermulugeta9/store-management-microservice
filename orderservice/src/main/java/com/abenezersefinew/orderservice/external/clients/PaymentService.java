@@ -24,7 +24,7 @@ public interface PaymentService {
     ResponseEntity<Long> processPayment(@RequestBody PaymentRequestModel paymentRequestModel);
 
     /** This method gets executed when the circuit breaker doesn't find the service unavailable. */
-    default void circuitBreakerFallback() {
+    default ResponseEntity<Long> circuitBreakerFallback() {
         throw new GenericException("Payment service unavailable.", "UNAVAILABLE", 500);
     }
 }

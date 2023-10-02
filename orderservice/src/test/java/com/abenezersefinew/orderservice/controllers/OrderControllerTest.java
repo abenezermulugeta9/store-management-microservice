@@ -1,6 +1,9 @@
 package com.abenezersefinew.orderservice.controllers;
 
 import com.abenezersefinew.orderservice.OrderServiceConfig;
+import com.abenezersefinew.orderservice.entities.Order;
+import com.abenezersefinew.orderservice.models.OrderRequestModel;
+import com.abenezersefinew.orderservice.models.PaymentMode;
 import com.abenezersefinew.orderservice.repositories.OrderRepository;
 import com.abenezersefinew.orderservice.services.interfaces.OrderService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -10,6 +13,8 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -17,12 +22,20 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest({"server.port = 0"}) // The port definition used to specify that the test should run on a dynamically assigned random port.
 @EnableConfigurationProperties // Binds external configuration properties to Java objects.
@@ -62,8 +75,9 @@ public class OrderControllerTest {
         reduceQuantity();
     }
 
+    // WireMock stubs
     private void reduceQuantity() {
-        wireMockServer.stubFor(WireMock.put("/products/reduceQuantity/.*")
+        wireMockServer.stubFor(WireMock.put("/products/reduce-quantity/.*")
                 .willReturn(WireMock.aResponse()
                         .withStatus(HttpStatus.OK.value())
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)));
@@ -91,6 +105,39 @@ public class OrderControllerTest {
                         .withStatus(HttpStatus.OK.value())
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                         .withBody(StreamUtils.copyToString(OrderControllerTest.class.getClassLoader()
-                                        .getResourceAsStream("mock/GetProduct.json"), Charset.defaultCharset()))));
+                                .getResourceAsStream("mock/GetProduct.json"), Charset.defaultCharset()))));
+    }
+
+    @Test
+    @Disabled
+    public void testPlaceOrderWithProcessPayment() throws Exception {
+        // Place order
+        OrderRequestModel orderRequestModel = getMockOrderRequestModel();
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/orders/place-order")
+                .with(SecurityMockMvcRequestPostProcessors.jwt().authorities(new SimpleGrantedAuthority("Customer")))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(orderRequestModel))
+                ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        String orderId = mvcResult.getResponse().getContentAsString();
+
+        // Find value from H2 in-memory database.
+        Optional<Order> order = orderRepository.findById(Long.valueOf(orderId));
+
+        // Assertions
+        assertTrue(order.isPresent());
+        assertEquals(Long.parseLong(orderId), order.get().getId());
+        assertEquals(orderRequestModel.getTotalAmount(), order.get().getAmount());
+        assertEquals(orderRequestModel.getQuantity(), order.get().getQuantity());
+     }
+
+    private OrderRequestModel getMockOrderRequestModel() {
+        return OrderRequestModel.builder()
+                .productId(1L)
+                .paymentMode(PaymentMode.CASH)
+                .quantity(10L)
+                .totalAmount(200L)
+                .build();
     }
 }
