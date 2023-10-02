@@ -13,3 +13,13 @@ spring:
         git:
           uri: https://github.com/abenezermulugeta9/store-management-microservice-config-server
           clone-on-start: true
+
+# Client discovery configuration
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}
