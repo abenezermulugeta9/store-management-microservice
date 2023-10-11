@@ -1,10 +1,14 @@
-# Define a base image from docker hub
+# Sets the base image for the container
 FROM openjdk:11
-# Variable to store the path for the build artifact from the project
+
+# Declares an argument JAR_FILE that can be passed to the Docker build command
 ARG JAR_FILE=target/*.jar
-# Create a new jar file in the image and copy the content of the artifiact from the project
+
+# Copies the JAR file from the host machine to the container image
 COPY ${JAR_FILE} configserver.jar
-# Run the artifcat whenever the container starts i.e.("java -jar serviceregistry.jar")
+
+# Sets the default command that will be executed when a container is started from this image
 ENTRYPOINT ["java", "-jar", "/configserver.jar"]
-# Specify a port number
+
+# Indicates the container will listen on port 8761
 EXPOSE 9296
