@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  serviceregistry:
+    image: 'abenezermulugeta/serviceregistry:0.0.1'
+    container_name: serviceregistry
+    ports:
+      - '8761:8761'
+  configserver:
+    image: 'abenezermulugeta/configserver:0.0.1'
+    container_name: configserver
+    ports:
+      - '9296:9296'
+    healthcheck: # defines how Docker should test the container to check that it is still working
+      test: ["CMD", "curl", "-f", "http://configserver:9296/actuator/healthcheck"] # the endpoint to be tested if the service is running
+      interval: 10s # the time interval of the test, ping the above api every 10 seconds
+      timeout: 5s # specifies the time that Docker will wait for a response from the health check test
+      retries: 5 # indicates the number of retries, Docker will make after a failed health check test before considering the container to be unhealthy
+    depends_on:
+      - serviceregistry
+    environment:
+      - EUREKA_SERVER_ADDRESS=http://serviceregistry:8761/eureka # docker compose creates services under the same network, we can use the container names
+  cloudgateway:
+    image: 'abenezermulugeta/cloudgateway:0.0.1'
+    container_name: cloudgateway
+    ports:
+      - '9090:9090'
+    depends_on:
+      configserver:
+        condition: service_healthy # this service won't start if configserver healthcheck failed
+    environment:
+      - EUREKA_SERVER_ADDRESS=http://serviceregistry:8761/eureka # docker compose creates services under the same network, we can use the container namess
+      - CONFIG_SERVER_URL=configserver # docker compose creates services under the same network, we can use the container names
