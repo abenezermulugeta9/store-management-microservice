@@ -1,0 +1,25 @@
+# apiVersion: It defines the API version used to create the object
+apiVersion: apps/v1
+
+# Indicates the type of object to be created
+kind: Deployment
+
+metadata: # Provides metadata like name, namespace, labels, etc. about the resource
+  name: service-registry
+
+# This is where the actual configuration of the deployment goes
+spec: 
+  selector: # It specifies how the deployment finds which pods to manage
+    matchLabels: # Indicates the label to match when finding pods
+      app: service-registry # The label that should match when finding is "service-registry"
+  template: # Defines the pod template that will be used to create pods for this deployment
+    metadata: # Specifies metadata for the pod
+      labels:
+        app: service-registry
+    spec: # Defines the pod specification
+      containers: # An array of containers to be run within the pod
+        - name: service-registry # The name of the container
+          image: abenezermulugeta/serviceregistry:0.0.1 # The container image to be used
+          imagePullPolicy: Always # The policy for pulling the image. 
+          ports: # Specifies the ports where the container will listen
+            - containerPort: 8761
