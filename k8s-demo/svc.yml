@@ -1,0 +1,21 @@
+# Services allow pods to easily communicate with each other, even across different nodes.
+
+# Name Resolution: Kubernetes Service has its own IP address and a DNS name, so you can access 
+# it without having to know the IP address of the pod(s) that are running the application.
+
+# The API version used to create the object
+apiVersion: v1
+
+# The kind of object to be created
+kind: Service
+
+metadata: # Provides metadata about the object, such as its name, labels, and possibly other configurations
+  name: service-registry-svc
+
+# The actual configuration details of the object, where you describe how the service should behave
+spec:
+  selector: # Defines how the service identifies the pods to which network traffic should be directed
+    app: service-registry # The service is looking for pods with labels that include "service-registry"
+  ports: # Specifies the network port configuration
+    - port: 80 # The port on which the service is exposed and accessible within the cluster
+      targetPort: 8761 # The port on the pod to which network traffic will be sent after reaching the service
