@@ -7,7 +7,8 @@ spring:
   application:
     name: PRODUCT-SERVICE
   config:
-    import: configserver:http://localhost:9296 # Client discovery configuration coming from config server in github
+    # Client discovery configuration coming from config server in github
+    import: configserver:${CONFIG_SERVER_URL:http://localhost:9296} # If ${CONFIG_SERVER_URL} env variable is available, use it, otherwise use "http://localhost:9296"
   # Database server configuration
   datasource:
     url: jdbc:mysql://${DB_HOST:localhost}:3306/productdb
