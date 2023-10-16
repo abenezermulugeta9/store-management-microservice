@@ -24,3 +24,10 @@ docker-compose -f docker-compose.yml up -d
 
 # docker compose stopping services and removing the containers
 docker-compose -f docker-compose.yml down 
+
+# push to docker hub 
+# login to docker hub
+docker login
+
+# push image to docker hub
+docker push repository/imageName:tag
