@@ -1,0 +1,44 @@
+# This YAML defines a Deployment named "payment-service-app" for deploying the "payment-service-app" application.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service-app  # Name of the Deployment
+spec:
+  selector:
+    matchLabels:
+      app: payment-service-app  # Select pods with the label "app: payment-service-app"
+  template:
+    metadata:
+      labels:
+        app: payment-service-app  # Labels applied to pods created by this Deployment
+    spec:
+      containers:
+        - name: payment-service-app  # Name of the container
+          image: abenezermulugeta/paymentservice  # Docker image to run
+          ports:
+            - containerPort: 8081  # Port to expose on the container
+          env:
+            - name: EUREKA_SERVER_ADDRESS  # Environment variable for the container
+              valueFrom:
+                configMapKeyRef:
+                  key: eureka_service_address  # Reference to a key in the "eureka-cm" ConfigMap
+                  name: eureka-cm  # Name of the ConfigMap from which to fetch the key
+            - name: CONFIG_SERVER_URL  # Another environment variable for the container
+              valueFrom:
+                configMapKeyRef:
+                  key: config_service_url  # Reference to a key in the "config-cm" ConfigMap
+                  name: config-cm  # Name of the ConfigMap from which to fetch the key
+
+---
+
+# This YAML defines a Service named "payment-service-svc" for exposing the "payment-service-app" application.
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service-svc  # Name of the Service
+spec:
+  selector:
+    app: payment-service-app  # Select pods with the label "app: payment-service-app"
+  ports:
+    - port: 80  # Port exposed by the service externally
+      containerPort: 8081  # Port on which the service is running within the container
