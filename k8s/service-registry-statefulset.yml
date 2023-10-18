@@ -27,7 +27,7 @@ spec:
 # in a StatefulSet by their network identity (i.e., their Pod DNS names).
 # In this case, it's typically used for applications like service discovery or database
 # clustering where each pod has a unique identity.
-apiVersion: app/v1
+apiVersion: v1
 kind: Service
 metadata:
   name: eureka  # Name of the Service
@@ -45,7 +45,7 @@ spec:
 # NodePort service is used to expose the "eureka" application externally to the cluster.
 # It opens a specific port (in this case, port 80) on every node in the cluster and forwards
 # traffic to the "eureka" pods.
-apiVersion: app/v1
+apiVersion: v1
 kind: Service
 metadata:
   name: eureka-lb  # Name of the Service

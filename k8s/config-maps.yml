@@ -1,0 +1,9 @@
+# This YAML defines a ConfigMap for storing configuration data.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eureka-cm  # Name of the ConfigMap
+data:
+  # The structured URL "http://eureka-0.eureka:8761/eureka" appears to be pointing to the first pod (with ordinal number 0) in a headless StatefulSet named "eureka,"
+  # specifically to the Eureka service running on port 8761 within that pod. This URL structure allows for direct communication with individual pods in the StatefulSet.
+  eureka_service_address: "http://eureka-0.eureka:8761/eureka"  # Key-value pair stored in the ConfigMap

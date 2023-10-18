@@ -1,0 +1,39 @@
+# This YAML defines a Deployment named "config-server-app" for deploying the "config-server-app" application.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: config-server-app  # Name of the Deployment
+spec:
+  selector:
+    matchLabels:
+      app: config-server-app  # Select pods with the label "app: config-server-app"
+  template:
+    metadata:
+      labels:
+        app: config-server-app  # Labels applied to pods created by this Deployment
+    spec:
+      containers:
+        - name: config-server-app  # Name of the container
+          image: abenezermulugeta/configserver  # Docker image to run
+          ports:
+            - containerPort: 9296  # Port to expose on the container
+          env:
+            - name: EUREKA_SERVER_ADDRESS  # Environment variable for the container
+              valueFrom:
+                configMapKeyRef:
+                  key: eureka_service_address  # Reference to a key in the "eureka-cm" ConfigMap
+                  name: eureka-cm  # Name of the ConfigMap from which to fetch the key
+
+---
+
+# This YAML defines a Service named "config-server-svc" for exposing the "config-server-app" application.
+apiVersion: v1
+kind: Service
+metadata:
+  name: config-server-svc  # Name of the Service
+spec:
+  selector:
+    app: config-server-app  # Select pods with the label "app: config-server-app"
+  ports:
+    - port: 80  # Port exposed by the service externally
+      targetPort: 9296  # Port to which the traffic will be forwarded within the cluster
