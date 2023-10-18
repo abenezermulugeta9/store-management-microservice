@@ -1,0 +1,58 @@
+# This YAML defines a StatefulSet named "eureka" for running a stateful application.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: eureka  # Name of the StatefulSet
+spec:
+  selector:
+    matchLabels:
+      app: eureka  # Select pods with the label "app: eureka"
+  serviceName: "eureka"  # Name of the associated Service
+  replicas: 1  # Run a single replica of the StatefulSet
+  template:
+    metadata:
+      labels:
+        app: eureka  # Labels applied to pods created by this StatefulSet
+    spec:
+      containers:
+        - name : eureka  # Name of the container
+          image: abenezermulugeta/serviceregistry  # Docker image to run
+          ports:
+            - containerPort: 8761  # Port to expose on the container
+
+---
+
+# This YAML defines a Service named "eureka" with clusterIP set to None (Headless Service)
+# The "eureka" headless service is used when you need to discover individual pods
+# in a StatefulSet by their network identity (i.e., their Pod DNS names).
+# In this case, it's typically used for applications like service discovery or database
+# clustering where each pod has a unique identity.
+apiVersion: app/v1
+kind: Service
+metadata:
+  name: eureka  # Name of the Service
+spec:
+  clusterIP: None  # Headless service - no single cluster IP assigned to this service. Instead, it allows DNS-based discovery of pods.
+  selector:
+    app: eureka  # Select pods with the label "app: eureka"
+  ports:
+    - port: 8761  # Port exposed by the service
+      name: eureka  # Name for this port
+
+---
+
+# This YAML defines another Service named "eureka-lb" with type NodePort.
+# NodePort service is used to expose the "eureka" application externally to the cluster.
+# It opens a specific port (in this case, port 80) on every node in the cluster and forwards
+# traffic to the "eureka" pods.
+apiVersion: app/v1
+kind: Service
+metadata:
+  name: eureka-lb  # Name of the Service
+spec:
+  type: NodePort  # Expose the service via a NodePort
+  selector:
+    app: eureka  # Select pods with the label "app: eureka"
+  ports:
+    - port: 80  # Port exposed by the service externally
+      targetPort: 8761  # Port to which the traffic will be forwarded within the cluster
