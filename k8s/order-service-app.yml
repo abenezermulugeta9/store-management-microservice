@@ -1,22 +1,22 @@
-# This YAML defines a Deployment named "cloud-gateway-app" for deploying the "cloud-gateway-app" application.
+# This YAML defines a Deployment named "order-service-app" for deploying the "order-service-app" application.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cloud-gateway-app  # Name of the Deployment
+  name: order-service-app  # Name of the Deployment
 spec:
   selector:
     matchLabels:
-      app: cloud-gateway-app  # Select pods with the label "app: cloud-gateway-app"
+      app: order-service-app  # Select pods with the label "app: order-service-app"
   template:
     metadata:
       labels:
-        app: cloud-gateway-app  # Labels applied to pods created by this Deployment
+        app: order-service-app  # Labels applied to pods created by this Deployment
     spec:
       containers:
-        - name: cloud-gateway-app  # Name of the container
-          image: abenezermulugeta/gateway  # Docker image to run
+        - name: order-service-app  # Name of the container
+          image: abenezermulugeta/orderservice  # Docker image to run
           ports:
-            - containerPort: 9090  # Port to expose on the container
+            - containerPort: 8082  # Port to expose on the container
           env:
             - name: EUREKA_SERVER_ADDRESS  # Environment variable for the container
               valueFrom:
@@ -31,15 +31,14 @@ spec:
 
 ---
 
-# This YAML defines a Service named "cloud-gateway-svc" for exposing the "cloud-gateway-app" application.
+# This YAML defines a Service named "order-service-svc" for exposing the "order-service-app" application.
 apiVersion: v1
 kind: Service
 metadata:
-  name: cloud-gateway-svc  # Name of the Service
+  name: order-service-svc  # Name of the Service
 spec:
-  type: LoadBalancer  # Specifies that a LoadBalancer should be used to provide external access
   selector:
-    app: cloud-gateway-app  # Select pods with the label "app: cloud-gateway-app"
+    app: order-service-app  # Select pods with the label "app: order-service-app"
   ports:
     - port: 80  # Port exposed by the service externally
-      containerPort: 9090  # Port on which the service is running within the container
+      containerPort: 8082  # Port on which the service is running within the container
