@@ -28,6 +28,11 @@ spec:
                 configMapKeyRef:
                   key: config_service_url  # Reference to a key in the "config-cm" ConfigMap
                   name: config-cm  # Name of the ConfigMap from which to fetch the key
+            - name: DB_HOST  # Another environment variable for the container
+              valueFrom:
+                configMapKeyRef:
+                  key: hostname  # Reference to a key in the "mysql-cm" ConfigMap
+                  name: mysql-cm  # Name of the ConfigMap from which to fetch the key
 
 ---
 

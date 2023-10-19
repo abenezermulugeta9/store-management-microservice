@@ -1,4 +1,4 @@
-# This YAML defines a ConfigMap named "eureka-cm" for storing configuration data.
+# This YAML defines a ConfigMap named "eureka-cm" for storing service registry configuration data.
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,7 +9,7 @@ data:
   eureka_service_address: "http://eureka-0.eureka:8761/eureka"  # Key-value pair stored in the ConfigMap
 
 ---
-
+# This YAML defines a ConfigMap named "config-cm" for storing config server configuration data.
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -17,3 +17,13 @@ metadata:
 data:
   # The structured URL "http://config-server-svc" appears to be pointing to the config server service (config-server-svc).
   config_service_url: "http://config-server-svc"  # Key-value pair stored in the ConfigMap
+
+---
+# This YAML defines a ConfigMap named "mysql-cm" for storing mysql configuration data.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-cm  # Name of the ConfigMap
+data:
+  # "mysql-0.mysql" appears to be pointing to the mysql headless service running in the cluster.
+  hostname: "mysql-0.mysql"
