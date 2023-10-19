@@ -1,0 +1,98 @@
+# This YAML file defines several Kubernetes resources for setting up a MySQL database in a Kubernetes cluster.
+
+# PersistentVolume (mysql-pv) is a storage resource definition.
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv
+spec:
+  capacity:
+    storage: 1Gi   # Defines the storage capacity as 1 Gigabyte.
+  accessModes:
+    - ReadWriteOnce  # Allows read-write access by a single node.
+  storageClassName: manual
+  hostPath:
+    path: "/run/desktop/mnt/host/c/temp/testfiles"  # The path on the host where the volume is mounted.
+    type: DirectoryOrCreate  # Creates the directory if it doesn't exist.
+
+---
+
+# PersistentVolumeClaim (mysql-pvc) is a request for storage.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+spec:
+  resources:
+    requests:
+      storage: 1Gi  # Requests 1 Gigabyte of storage.
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce  # Requests read-write access by a single node.
+
+---
+
+# StatefulSet (mysql) is a controller for managing stateful applications like databases.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  serviceName: mysql  # The service name for the MySQL pods.
+  replicas: 1  # One replica of the MySQL database.
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0  # The Docker image for MySQL 8.0.
+          ports:
+            - containerPort: 3306  # Exposes port 3306 for MySQL connections.
+              name: mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: root  # Sets the root password for MySQL.
+          volumeMounts:
+            - name: mysql-initdb
+              mountPath: /docker-entrypoint-initdb.d  # Mounts a volume for initialization scripts.
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql  # Mounts the persistent storage for MySQL data.
+    volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc  # Associates the PersistentVolumeClaim with this volume.
+      - name: mysql-initdb
+        configMap:
+          name: mysql-initdb-cm  # Uses a ConfigMap for initialization scripts.
+
+---
+
+# ConfigMap (mysql-initdb-cm) holds configuration data as key-value pairs.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-initdb-cm
+data:
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS orderdb;
+    CREATE DATABASE IF NOT EXISTS paymentdb;
+    CREATE DATABASE IF NOT EXISTS productdb;
+
+---
+
+# Service (mysql) defines a network service (headless service) to expose the MySQL database.
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  clusterIP: None  # Sets the cluster IP to None, making it a headless service.
+  selector:
+    app: mysql  # Selects pods with the 'app: mysql' label.
+  ports:
+    - port: 3306  # Exposes port 3306 for MySQL connections.
