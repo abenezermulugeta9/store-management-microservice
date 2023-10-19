@@ -1,0 +1,48 @@
+# Define a Kubernetes Deployment resource named "zipkin"
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zipkin
+spec:
+  selector:
+    matchLabels:
+      app: zipkin
+  template:
+    metadata:
+      labels:
+        app: zipkin
+    spec:
+      containers:
+        - name: zipkin
+          image: openzipkin/zipkin
+          ports:
+            - containerPort: 9411
+
+---
+
+# Define a Kubernetes Service resource named "zipkin-svc"
+apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin-svc
+spec:
+  selector:
+    app: zipkin
+  ports:
+    - port: 9411
+      targetPort: 9411
+
+---
+
+# Define another Kubernetes Service resource named "zipkin-lb-svc" with a LoadBalancer type
+apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin-lb-svc
+spec:
+  type: LoadBalancer
+  selector:
+    app: zipkin
+  ports:
+    - port: 9411
+      targetPort: 9411
