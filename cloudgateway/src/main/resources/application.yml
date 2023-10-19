@@ -9,6 +9,9 @@ spring:
   config:
     # Client discovery configuration coming from config server in github
     import: configserver:${CONFIG_SERVER_URL:http://localhost:9296} # If ${CONFIG_SERVER_URL} env variable is available, use it, otherwise use "http://localhost:9296"
+  redis:  # Configures redis to be used as a rate limiter by the Cloud Gateway Service, redis is configured in k8s 
+    host : redis
+    port: 6379
   cloud:
     gateway: # Api gateway configuration
       routes:
