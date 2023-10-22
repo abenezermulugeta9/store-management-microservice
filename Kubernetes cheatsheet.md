@@ -55,6 +55,9 @@ kubectl apply -f deploy.yml
 # apply service type resource to the cluster, this service will target pods defined in the confguration
 kubectl apply -f svc.yml
 
+# apply everything in a folder, where k8s is the folder in this case
+kubectl apply -f .\k8s\ 
+
 # delete every resource configured in the deployment yml file
 kubectl delete -f deploy.yml
 

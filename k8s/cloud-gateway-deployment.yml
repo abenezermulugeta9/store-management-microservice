@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: cloud-gateway-app  # Name of the container
-          image: abenezermulugeta/gateway  # Docker image to run
+          image: abenezermulugeta/cloudgateway:0.0.1  # Docker image to run
           ports:
             - containerPort: 9090  # Port to expose on the container
           env:
@@ -41,5 +41,5 @@ spec:
   selector:
     app: cloud-gateway-app  # Select pods with the label "app: cloud-gateway-app"
   ports:
-    - port: 80  # Port exposed by the service externally
-      containerPort: 9090  # Port on which the service is running within the container
+  - port: 80  # Port exposed by the service externally
+    targetPort: 9090  # Port on which the service is running within the container

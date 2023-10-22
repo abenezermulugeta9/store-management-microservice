@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: order-service-app  # Name of the container
-          image: abenezermulugeta/orderservice  # Docker image to run
+          image: abenezermulugeta/orderservice:0.0.1  # Docker image to run
           ports:
             - containerPort: 8082  # Port to expose on the container
           env:
@@ -46,4 +46,4 @@ spec:
     app: order-service-app  # Select pods with the label "app: order-service-app"
   ports:
     - port: 80  # Port exposed by the service externally
-      containerPort: 8082  # Port on which the service is running within the container
+      targetPort: 8082  # Port on which the service is running within the container

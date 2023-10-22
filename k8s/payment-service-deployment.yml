@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: payment-service-app  # Name of the container
-          image: abenezermulugeta/paymentservice  # Docker image to run
+          image: abenezermulugeta/paymentservice:0.0.1  # Docker image to run
           ports:
             - containerPort: 8081  # Port to expose on the container
           env:
@@ -46,4 +46,4 @@ spec:
     app: payment-service-app  # Select pods with the label "app: payment-service-app"
   ports:
     - port: 80  # Port exposed by the service externally
-      containerPort: 8081  # Port on which the service is running within the container
+      targetPort: 8081  # Port on which the service is running within the container

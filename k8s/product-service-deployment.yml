@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: product-service-app  # Name of the container
-          image: abenezermulugeta/productservice  # Docker image to run
+          image: abenezermulugeta/productservice:0.0.1  # Docker image to run
           ports:
             - containerPort: 8080  # Port to expose on the container
           env:
@@ -46,4 +46,4 @@ spec:
     app: product-service-app  # Select pods with the label "app: product-service-app"
   ports:
     - port: 80  # Port exposed by the service externally
-      containerPort: 8080  # Port on which the service is running within the container
+      targetPort: 8080  # Port on which the service is running within the container

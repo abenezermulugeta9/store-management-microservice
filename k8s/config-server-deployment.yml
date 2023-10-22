@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: config-server-app  # Name of the container
-          image: abenezermulugeta/configserver  # Docker image to run
+          image: abenezermulugeta/configserver:0.0.1  # Docker image to run
           ports:
             - containerPort: 9296  # Port to expose on the container
           env:

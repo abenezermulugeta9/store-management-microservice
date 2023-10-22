@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name : eureka  # Name of the container
-          image: abenezermulugeta/serviceregistry  # Docker image to run
+          image: abenezermulugeta/serviceregistry:0.0.1  # Docker image to run
           ports:
             - containerPort: 8761  # Port to expose on the container
 
