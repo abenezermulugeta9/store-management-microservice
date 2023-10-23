@@ -1,33 +1,38 @@
-# build a docker image
+# Docker Commands
+
+This README provides instructions for common Docker commands. Below are various commands for building, running, and managing Docker containers and images.
+
+```bash
+# Build a Docker image
 docker build -t imagename:0.0.1 .
 
-# run a docker container
-docker run -d -p8080:8080 --name containername image_id(image_name)
+# Run a Docker container
+docker run -d -p 8080:8080 --name containername image_id(image_name)
 
-# run a docker container with environment variable
-docker run -d -p8080:8080 -e ENV_VARIABLE=value --name containername image_id(image_name)
+# Run a Docker container with environment variable
+docker run -d -p 8080:8080 -e ENV_VARIABLE=value --name containername image_id(image_name)
 
-# clean everything in docker
+# Clean up Docker (remove all unused resources)
 docker system prune -a
 
-# stop running containers
+# Stop running containers
 docker stop container_id1 container_id2
 
-# delete containers
+# Delete containers
 docker rm container_id1 container_id2
 
-# delete images
+# Delete Docker images
 docker rmi image_id1 image_id2
 
-# docker compose creating containers and running them
+# Docker Compose: Create containers and run services
 docker-compose -f docker-compose.yml up -d
 
-# docker compose stopping services and removing the containers
-docker-compose -f docker-compose.yml down 
+# Docker Compose: Stop services and remove containers
+docker-compose -f docker-compose.yml down
 
-# push to docker hub 
-# login to docker hub
+# Push to Docker Hub
+# Login to Docker Hub
 docker login
 
-# push image to docker hub
+# Push Docker image to Docker Hub
 docker push repository/imageName:tag
