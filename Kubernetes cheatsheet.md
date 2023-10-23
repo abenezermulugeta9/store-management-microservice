@@ -1,65 +1,39 @@
-# GET RESOURCES FROM THE KUBERNETES CLUSTER
-###########################################################
+# Kubernetes Cluster Resource Management
 
-# get all namespaces
+This README provides instructions for managing resources in a Kubernetes cluster using `kubectl`. Below are various commands for common tasks.
+
+```bash
+# Get Resources from the Kubernetes Cluster
 kubectl get namespaces
-
-# get all pods
 kubectl get pods
-
-# get all deployments
 kubectl get deployment
-
-# get all services
 kubectl get services
-
-###########################################################
-
-# get every resource in the cluster
 kubectl get all
-
-# get more details about every resource in the cluster
 kubectl get all -o wide
-
-# delete every resource from the cluster
 kubectl delete all --all
 
-###########################################################
-
-# create a nginx deployment
+# Manage Deployments and Pods
 kubectl create deployment nginx --image=nginx
-
-# get detail about a specific deployment
 kubectl describe deployment nginx
-
-# get detail about a specific pods
 kubectl describe pod nginx-77b4fdf86c-vkc4j
-
-# get logs of a pod
 kubectl logs nginx-77b4fdf86c-vkc4j
-
-# go interactive mode inside the pod
 kubectl exec -it nginx-77b4fdf86c-vkc4j -- /bin/bash
-
-# edit deployment configuration
 kubectl edit deployment nginx
 
-###########################################################
-
-# deploy to kubernetes cluster after writing the yml
-# go to the directory where the yml files are located
-
-# apply deployment type resource to the cluster
+# Deploy Resources to Kubernetes Cluster
+# Navigate to the directory containing YAML files.
 kubectl apply -f deploy.yml
-
-# apply service type resource to the cluster, this service will target pods defined in the confguration
 kubectl apply -f svc.yml
-
-# apply everything in a folder, where k8s is the folder in this case
-kubectl apply -f .\k8s\ 
-
-# delete every resource configured in the deployment yml file
+kubectl apply -f ./folderName/
 kubectl delete -f deploy.yml
-
-# delete every resource configured in the service yml file
 kubectl delete -f svc.yml
+
+# Namespace Management
+kubectl create namespace my-namespace
+kubectl get namespaces
+kubectl apply -f deploy.yml -n my-namespace
+kubectl get all -n my-namespace
+
+# Access Services via Minikube
+minikube service serviceName
+minikube service eureka-lb
